@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.serverless/
+.env
+.env.local
+*.log
+.DS_Store
+
+# Google Cloud credentials (contains sensitive keys)
+google-cloud-key.json
+*.json.key
+*.pem
+
+
