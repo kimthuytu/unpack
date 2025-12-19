@@ -20,10 +20,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    // Load chat history
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(chatServiceProvider).loadChatHistory(widget.entryId);
-    });
+    // Chat history will load automatically via chatHistoryProvider
   }
 
   @override
@@ -48,8 +45,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             message,
           );
 
-      // Reload chat history
-      await ref.read(chatServiceProvider).loadChatHistory(widget.entryId);
+      // Reload chat history by invalidating provider
+      ref.invalidate(chatHistoryProvider(widget.entryId));
 
       // Scroll to bottom
       if (_scrollController.hasClients) {
@@ -204,5 +201,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
   }
 }
+
 
 

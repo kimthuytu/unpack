@@ -16,3 +16,4 @@ export const TABLE_NAME = process.env.DYNAMODB_TABLE || 'unpack-backend-dev';
 export const S3_BUCKET = process.env.S3_BUCKET || 'unpack-backend-dev';
 
 
+

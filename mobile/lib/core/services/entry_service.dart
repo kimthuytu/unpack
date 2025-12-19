@@ -1,11 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants/api_endpoints.dart';
 import '../models/entry_model.dart';
-import 'api_service.dart';
+import '../providers/api_provider.dart';
+import 'api_service_interface.dart';
 import 'dart:io';
 
 class EntryService {
-  final ApiService _apiService;
+  final ApiServiceInterface _apiService;
 
   EntryService(this._apiService);
 
@@ -87,5 +88,6 @@ final entriesProvider = FutureProvider<List<EntryModel>>((ref) async {
   final entryService = ref.watch(entryServiceProvider);
   return await entryService.getEntries();
 });
+
 
 

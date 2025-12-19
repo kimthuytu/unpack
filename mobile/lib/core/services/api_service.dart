@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
 import '../config/app_config.dart';
 import '../constants/api_endpoints.dart';
+import 'api_service_interface.dart';
 
-class ApiService {
+class ApiService implements ApiServiceInterface {
   late final Dio _dio;
   String? _authToken;
 
@@ -132,5 +133,6 @@ class ApiService {
     }
   }
 }
+
 
 

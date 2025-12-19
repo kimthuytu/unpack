@@ -1,10 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants/api_endpoints.dart';
 import '../models/chat_message_model.dart';
-import 'api_service.dart';
+import '../providers/api_provider.dart';
+import 'api_service_interface.dart';
 
 class ChatService {
-  final ApiService _apiService;
+  final ApiServiceInterface _apiService;
 
   ChatService(this._apiService);
 
@@ -52,5 +53,6 @@ final chatHistoryProvider =
   final chatService = ref.watch(chatServiceProvider);
   return await chatService.getChatHistory(entryId);
 });
+
 
 

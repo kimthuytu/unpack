@@ -1,9 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants/api_endpoints.dart';
-import 'api_service.dart';
+import '../providers/api_provider.dart';
+import 'api_service_interface.dart';
 
 class RecommendationService {
-  final ApiService _apiService;
+  final ApiServiceInterface _apiService;
 
   RecommendationService(this._apiService);
 
@@ -31,5 +32,6 @@ final recommendationsProvider = FutureProvider<List<Map<String, dynamic>>>((ref)
   final recommendationService = ref.watch(recommendationServiceProvider);
   return await recommendationService.getRecommendations();
 });
+
 
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../core/services/recommendation_service.dart';
 
 class RecommendationsScreen extends ConsumerWidget {
@@ -9,11 +10,7 @@ class RecommendationsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final recommendationsAsync = ref.watch(recommendationsProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Recommendations'),
-      ),
-      body: recommendationsAsync.when(
+    return recommendationsAsync.when(
         data: (recommendations) {
           if (recommendations.isEmpty) {
             return const Center(
@@ -65,15 +62,23 @@ class RecommendationsScreen extends ConsumerWidget {
                     ],
                   ),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () {
+                  onTap: () async {
                     // Open article URL
-                    if (recommendation['url'] != null) {
-                      // In production, use url_launcher package
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Opening: ${recommendation['url']}'),
-                        ),
-                      );
+                    final url = recommendation['url'] as String?;
+                    if (url != null) {
+                      final uri = Uri.parse(url);
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(uri, mode: LaunchMode.externalApplication);
+                      } else {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Could not open URL'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      }
                     }
                   },
                 ),
@@ -99,9 +104,9 @@ class RecommendationsScreen extends ConsumerWidget {
             ],
           ),
         ),
-      ),
     );
   }
 }
+
 
 

@@ -1,0 +1,10 @@
+This is a practice file for git exercises.
+
+You can modify this file to practice:
+- Adding files
+- Committing changes
+- Creating branches
+- Merging branches
+- And more!
+
+
