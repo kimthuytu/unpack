@@ -1,19 +1,44 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../constants/api_endpoints.dart';
-import 'api_service.dart';
+import '../providers/api_provider.dart';
+import 'api_service_interface.dart';
+import 'mock_api_service.dart' show MockApiService;
 
 class AuthService {
-  final ApiService _apiService;
+  final ApiServiceInterface _apiService;
   static const String _tokenBoxName = 'auth_tokens';
   static const String _userBoxName = 'user_data';
 
   AuthService(this._apiService);
 
   Future<void> initialize() async {
-    // Initialize Hive boxes for auth
-    await Hive.openBox(_tokenBoxName);
-    await Hive.openBox(_userBoxName);
+    // Initialize Hive boxes for auth (may already be open from main())
+    // Hive.openBox() is safe to call multiple times - it returns existing box if already open
+    try {
+      await Hive.openBox(_tokenBoxName);
+    } catch (e) {
+      // Box might already be open, ignore error
+    }
+    
+    try {
+      await Hive.openBox(_userBoxName);
+    } catch (e) {
+      // Box might already be open, ignore error
+    }
+    
+    // In mock mode, auto-login for testing
+    if (_apiService is MockApiService) {
+      await _saveTokens({'access_token': 'mock-token'});
+      await _saveUserData({
+        'id': 'test-user',
+        'email': 'test@example.com',
+        'name': 'Test User',
+      });
+      
+      return;
+    }
     
     // Load saved token
     final tokenBox = Hive.box(_tokenBoxName);
@@ -147,8 +172,5 @@ final authServiceProvider = Provider<AuthService>((ref) {
   return AuthService(apiService);
 });
 
-final apiServiceProvider = Provider<ApiService>((ref) {
-  return ApiService();
-});
 
 
