@@ -223,22 +223,39 @@ export interface DiscoveredTangent {
   excerpt: string;
 }
 
+// Validate and sanitize tangent name to be 2-6 words
+function sanitizeTangentName(name: string): string {
+  const words = name.trim().split(/\s+/);
+  
+  if (words.length < 2) {
+    // Pad with "reflection" if too short
+    return `${name} reflection`;
+  }
+  
+  if (words.length > 6) {
+    // Truncate to 6 words
+    return words.slice(0, 6).join(' ');
+  }
+  
+  return name.trim();
+}
+
 export async function discoverTangents(extractedText: string): Promise<DiscoveredTangent[]> {
   if (MOCK_MODE && !hasRealApiKey) {
     await new Promise(resolve => setTimeout(resolve, 2000));
     return [
       {
-        name: 'Career crossroads',
+        name: 'Career crossroads and uncertainty',
         emotion: 'anticipation',
         excerpt: "I'm not sure if I should push for that promotion or look elsewhere",
       },
       {
-        name: 'Evolving friendship',
+        name: 'Evolving friendship with Sarah',
         emotion: 'sadness',
         excerpt: 'We used to talk every day, now it\'s once a month',
       },
       {
-        name: 'Morning gratitude',
+        name: 'Morning gratitude moment',
         emotion: 'joy',
         excerpt: 'the sunrise this morning was beautiful',
       },
@@ -257,7 +274,7 @@ export async function discoverTangents(extractedText: string): Promise<Discovere
         {
           role: 'system',
           content: `Analyze this journal entry and identify distinct "tangents" - separate threads of thought or emotional themes. For each tangent, provide:
-1. name: A brief 2-4 word label
+1. name: A descriptive 2-6 word label (minimum 2 words, maximum 6 words)
 2. emotion: The primary emotion (use Plutchik's wheel: joy, trust, fear, surprise, sadness, disgust, anger, anticipation, or their combinations)
 3. excerpt: A key phrase from the text that represents this tangent
 
@@ -276,7 +293,13 @@ Identify 1-5 tangents depending on the content complexity.`,
 
   const data = await response.json();
   const parsed = JSON.parse(data.choices[0].message.content);
-  return parsed.tangents || parsed;
+  const tangents = parsed.tangents || parsed;
+  
+  // Sanitize all tangent names to ensure 2-6 words
+  return tangents.map((t: DiscoveredTangent) => ({
+    ...t,
+    name: sanitizeTangentName(t.name),
+  }));
 }
 
 export async function chat(

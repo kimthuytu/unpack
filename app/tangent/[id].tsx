@@ -253,6 +253,17 @@ From journal: ${entry?.extracted_text?.substring(0, 500) || ''}
     });
   };
 
+  const formatShortDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return `${date.getMonth() + 1}/${date.getDate()}`;
+  };
+
+  const truncateTitle = (title: string, maxWords: number = 6) => {
+    const words = title.trim().split(/\s+/);
+    if (words.length <= maxWords) return title;
+    return words.slice(0, maxWords).join(' ') + '...';
+  };
+
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
@@ -276,21 +287,18 @@ From journal: ${entry?.extracted_text?.substring(0, 500) || ''}
             style={styles.backButton}
             onPress={() => router.back()}
           >
-            <Ionicons name="arrow-back" size={24} color="#1A1A1A" />
+            <Ionicons name="chevron-back" size={24} color="#AA6758" />
           </TouchableOpacity>
           <View style={styles.headerCenter}>
-            <Text style={styles.tangentName} numberOfLines={1}>
-              {tangent?.name}
-            </Text>
-            <Text style={styles.tangentDate}>
-              {tangent && formatDate(tangent.created_at)}
+            <Text style={styles.tangentName} numberOfLines={1} ellipsizeMode="tail">
+              {tangent && `${formatShortDate(tangent.created_at)} ${truncateTitle(tangent.name)}`}
             </Text>
           </View>
           <TouchableOpacity
             style={styles.menuButton}
             onPress={() => setShowInfo(true)}
           >
-            <Ionicons name="ellipsis-horizontal" size={24} color="#1A1A1A" />
+            <Ionicons name="ellipsis-horizontal" size={20} color="#AA6758" />
           </TouchableOpacity>
         </View>
 
@@ -418,7 +426,7 @@ From journal: ${entry?.extracted_text?.substring(0, 500) || ''}
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFDF7',
+    backgroundColor: '#FFFAF6',
   },
   keyboardView: {
     flex: 1,
@@ -438,8 +446,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0EDE8',
   },
   backButton: {
     padding: 8,
@@ -449,12 +455,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tangentName: {
-    
-    fontSize: 18,
-    color: '#1A1A1A',
+    fontSize: 17,
+    fontWeight: '500',
+    color: '#AA6758',
+    maxWidth: 260,
   },
   tangentDate: {
-    
     fontSize: 12,
     color: '#999',
     marginTop: 2,
@@ -470,29 +476,27 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   messageBubble: {
-    maxWidth: '85%',
-    marginBottom: 16,
-    padding: 16,
-    borderRadius: 16,
+    maxWidth: '100%',
+    marginBottom: 24,
+    paddingVertical: 0,
+    paddingHorizontal: 0,
   },
   userMessage: {
-    alignSelf: 'flex-end',
-    backgroundColor: '#F0EDE8',
-    borderBottomRightRadius: 4,
+    alignSelf: 'flex-start',
+    backgroundColor: 'transparent',
   },
   aiMessage: {
     alignSelf: 'flex-start',
     backgroundColor: 'transparent',
-    paddingLeft: 0,
   },
   messageText: {
-    
     fontSize: 16,
-    color: '#1A1A1A',
+    color: '#3D3D3D',
     lineHeight: 24,
   },
   aiMessageText: {
-    color: '#C75D5D',
+    color: '#AA6758',
+    fontWeight: '500',
   },
   inputContainer: {
     paddingHorizontal: 16,
