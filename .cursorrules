@@ -1,0 +1,13 @@
+# Unpack Project Rules
+
+## Git Workflow
+- Create a new feature branch for each Notion task before starting work
+- Branch naming: `feature/task-name` or `fix/task-name`
+- Keep main clean, commit to feature branches
+- Create PR when task is complete
+
+## Notion Integration
+- Connected to Thuy's Notion workspace via MCP
+- Check Notion taskboard (🚀 Tasks) for task details before starting work
+- Reference task requirements, checklists, and design images from Notion pages
+- Update task status in Notion when work is complete
